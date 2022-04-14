@@ -1,0 +1,7 @@
+[package]
+name = "etcg_bot"
+version = "0.1.0"
+authors = ["Lukas Fischer <rust@o1oo11oo.de>"]
+edition = "2021"
+
+[dependencies]
