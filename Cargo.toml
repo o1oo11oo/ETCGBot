@@ -5,3 +5,7 @@ authors = ["Lukas Fischer <rust@o1oo11oo.de>"]
 edition = "2021"
 
 [dependencies]
+log = "0.4"
+pretty_env_logger = "0.4"
+teloxide = { version = "0.7", features = ["macros", "auto-send"] }
+tokio = { version = "1.8", features = ["rt-multi-thread", "macros"] }
