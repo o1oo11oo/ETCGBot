@@ -16,6 +16,8 @@ enum Command {
     Help,
     #[command(description = "apply for ETCG, totally legit.")]
     ETCG,
+    #[command(description = "wish everyone farewell.", rename = "lowercase")]
+    Goodbye,
 }
 
 async fn answer(
@@ -64,6 +66,33 @@ async fn answer(
             bot.parse_mode(ParseMode::MarkdownV2)
                 .send_message(message.chat.id, text)
                 .await?;
+        }
+
+        // say goodbye!
+        Command::Goodbye => {
+            log::info!("GoodBye message received: {message:?}");
+
+            // craft goodbye message
+            let text = format!(
+                "This joke has probably run its course\\.\n\
+                \n\
+                Thank you everyone for using the ETCGBot, \
+                have fun with the *ESTIEM Trading Card Game*, \
+                have a safe trip to Belgrade and see you there\\!\n\
+                \n\
+                _This message was sent after actions made by {}\\. If you receive it by a mistake, \
+                please submit a pull request [on GitHub](https://github.com/o1oo11oo/ETCGBot)\\._",
+                escape(&sender)
+            );
+
+            // send the message
+            bot.clone()
+                .parse_mode(ParseMode::MarkdownV2)
+                .send_message(message.chat.id, text)
+                .await?;
+
+            // leave the group
+            bot.leave_chat(message.chat.id).await?;
         }
     };
 
