@@ -23,30 +23,30 @@ async fn answer(
     message: Message,
     command: Command,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
+    // try to find out who sent this message, feels like there's a better way to do this
+    let sender = if let MessageKind::Common(common) = &message.kind {
+        if let Some(user) = &common.from {
+            if let Some(last_name) = &user.last_name {
+                format!("{} {last_name}", user.first_name)
+            } else {
+                user.first_name.clone()
+            }
+        } else {
+            "someone".to_owned()
+        }
+    } else {
+        "someone".to_owned()
+    };
+
     match command {
         Command::Help => {
             bot.send_message(message.chat.id, Command::descriptions())
-                .await?
+                .await?;
         }
 
         // the main command for this bot
         Command::ETCG => {
             log::info!("ETCG message received: {message:?}");
-
-            // try to find out who sent this message, feels like there's a better way to do this
-            let sender = if let MessageKind::Common(common) = message.kind {
-                if let Some(user) = common.from {
-                    if let Some(last_name) = user.last_name {
-                        format!("{} {last_name}", user.first_name)
-                    } else {
-                        user.first_name
-                    }
-                } else {
-                    "someone".to_owned()
-                }
-            } else {
-                "someone".to_owned()
-            };
 
             let text = format!(
                 "*__Congratulations\\!__*\n\
@@ -63,7 +63,7 @@ async fn answer(
 
             bot.parse_mode(ParseMode::MarkdownV2)
                 .send_message(message.chat.id, text)
-                .await?
+                .await?;
         }
     };
 
